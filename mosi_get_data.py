@@ -144,6 +144,7 @@ class MOSI(Dataset):
         text = torch.tensor(self.dataset['text'][ind])
 
         if self.aligned:
+            start = 0
             try:
                 start = text.nonzero(as_tuple=False)[0][0]
                 # start = 0
@@ -211,16 +212,21 @@ def get_dataloader(
     # processed_dataset['test']['vision'] = np.zeros(alldata['test']['vision'].shape)
     # processed_dataset['test']['audio'] = np.zeros(alldata['test']['audio'].shape)
 
-    train = DataLoader(MOSI(processed_dataset['train'], flatten_time_series, task=task, max_pad=max_pad, max_pad_num=max_seq_len, z_norm=z_norm),
-                       shuffle=train_shuffle, num_workers=num_workers, batch_size=batch_size,
-                       collate_fn=process)
-    valid = DataLoader(MOSI(processed_dataset['valid'], flatten_time_series, task=task, max_pad=max_pad, max_pad_num=max_seq_len, z_norm=z_norm),
-                       shuffle=False, num_workers=num_workers, batch_size=batch_size,
-                       collate_fn=process)
+    train = DataLoader(
+        MOSI(processed_dataset['train'], flatten_time_series, task=task, max_pad=max_pad, max_pad_num=max_seq_len,
+             z_norm=z_norm),
+        shuffle=train_shuffle, num_workers=num_workers, batch_size=batch_size,
+        collate_fn=process)
+    valid = DataLoader(
+        MOSI(processed_dataset['valid'], flatten_time_series, task=task, max_pad=max_pad, max_pad_num=max_seq_len,
+             z_norm=z_norm),
+        shuffle=False, num_workers=num_workers, batch_size=batch_size,
+        collate_fn=process)
 
     # Only keep text modality
     test = DataLoader(MOSI(processed_dataset['test'], flatten_time_series, task=task, max_pad=max_pad,
-                           max_pad_num=max_seq_len, z_norm=z_norm), shuffle=False, num_workers=num_workers, batch_size=batch_size, collate_fn=process)
+                           max_pad_num=max_seq_len, z_norm=z_norm), shuffle=False, num_workers=num_workers,
+                      batch_size=batch_size, collate_fn=process)
 
     print("Dataset split")
     print("Train Set: {}".format(len(train)))

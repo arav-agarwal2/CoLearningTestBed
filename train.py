@@ -5,6 +5,7 @@ from eval_metrics import accuracy
 
 softmax = nn.Softmax()
 
+
 class MMDL(nn.Module):
     def __init__(self, encoders, fusion, head, has_padding=False):
         super(MMDL, self).__init__()
@@ -40,6 +41,7 @@ class MMDL(nn.Module):
             return self.head([out, inputs[1][0]])
         return self.head(out)
 
+
 def deal_with_objective(objective, pred, truth, args):
     if type(objective) == nn.CrossEntropyLoss:
         if len(truth.size()) == len(pred.size()):
@@ -47,13 +49,17 @@ def deal_with_objective(objective, pred, truth, args):
         else:
             truth1 = truth
         return objective(pred, truth1.long().cuda())
-    elif type(objective) == nn.MSELoss or type(objective) == nn.modules.loss.BCEWithLogitsLoss or type(objective) == nn.L1Loss:
+    elif type(objective) == nn.MSELoss or type(objective) == nn.modules.loss.BCEWithLogitsLoss or type(
+            objective) == nn.L1Loss:
         return objective(pred, truth.float().cuda())
     else:
         return objective(pred, truth, args)
 
 
-def train(encoders, fusion, head, train_dataloader, valid_dataloader, total_epochs, additional_optimizing_modules=[], is_packed=False, early_stop=False, task="classification", optimtype=torch.optim.RMSprop, lr=0.001, weight_decay=0.0, objective=nn.CrossEntropyLoss(), save='best.pt', objective_args_dict=None, input_to_float=True, clip_val=8):
+def train(encoders, fusion, head, train_dataloader, valid_dataloader, total_epochs,
+          additional_optimizing_modules=[], is_packed=False, early_stop=False, task="classification",
+          optimtype=torch.optim.RMSprop, lr=0.001, weight_decay=0.0, objective=nn.CrossEntropyLoss(),
+          save='best.pt', objective_args_dict=None, input_to_float=True, clip_val=8):
     model = MMDL(encoders, fusion, head, has_padding=is_packed).cuda()
 
     def trainprocess():
@@ -65,7 +71,6 @@ def train(encoders, fusion, head, train_dataloader, valid_dataloader, total_epoc
                        additional_params, lr=lr, weight_decay=weight_decay)
         bestvalloss = 10000
         bestacc = 0
-        bestf1 = 0
         patience = 0
 
         def processinput(inp):
@@ -110,7 +115,6 @@ def train(encoders, fusion, head, train_dataloader, valid_dataloader, total_epoc
                 totalloss = 0.0
                 pred = []
                 true = []
-                pts = []
                 for j in valid_dataloader:
                     if is_packed:
                         model.train()
@@ -139,8 +143,7 @@ def train(encoders, fusion, head, train_dataloader, valid_dataloader, total_epoc
             valloss = totalloss/totals
             if task == "classification":
                 acc = accuracy(true, pred)
-                print("Epoch "+str(epoch)+" valid loss: "+str(valloss) +
-                        " acc: "+str(acc))
+                print("Epoch "+str(epoch)+" valid loss: "+str(valloss) + " acc: "+str(acc))
                 if acc > bestacc:
                     patience = 0
                     bestacc = acc

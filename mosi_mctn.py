@@ -1,13 +1,10 @@
-from torch import nn
-import torch
-import sys
-import os
-
+from test import test
 from train_mctn import train
-from test import test 
-from encoders import MLP, Encoder, Decoder 
+from encoders import MLP, Encoder, Decoder
 from mosi_get_data import get_dataloader
 
+import torch
+from torch import nn
 
 
 traindata, validdata, testdata = get_dataloader('/content/mosi_raw.pkl')
@@ -23,7 +20,6 @@ decoder1 = Decoder(hidden_dim, feature_dim, n_layers=1, dropout=0.0).cuda()
 
 reg_encoder = nn.GRU(hidden_dim, 32).cuda()
 head = MLP(32, 64, 1).cuda()
-
 
 train(
         traindata, validdata,

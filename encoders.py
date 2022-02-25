@@ -1,9 +1,9 @@
-import torch
 import math
+import torch
 
 from torch import nn
 from torch.nn import functional as F
-from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
+from torch.nn.utils.rnn import pack_padded_sequence
 
 class MLP(torch.nn.Module):
     """
@@ -126,9 +126,9 @@ class Decoder(nn.Module):
                           n_layers, dropout=dropout)
         self.out = nn.Linear(hidden_size * 2, output_size)
 
-    def forward(self, input, last_hidden, encoder_outputs):
+    def forward(self, inputs, last_hidden, encoder_outputs):
         # Get the embedding of the current input word (last output word)
-        embedded = input.unsqueeze(0)  # (1,B,N)
+        embedded = inputs.unsqueeze(0)  # (1,B,N)
 
         # Calculate attention weights and apply to encoder outputs
         attn_weights = self.attention(last_hidden[-1], encoder_outputs)

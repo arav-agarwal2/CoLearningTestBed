@@ -1,9 +1,10 @@
-import sklearn.metrics
 import numpy as np
 from sklearn.metrics import accuracy_score, f1_score
 
+
 def accuracy(truth, pred):
     return accuracy_score(truth.cpu().numpy(), pred.cpu().numpy())
+
 
 def eval_affect(truths, results, exclude_zero=True):
     if type(results) is np.ndarray:
@@ -21,6 +22,7 @@ def eval_affect(truths, results, exclude_zero=True):
 
     return accuracy_score(binary_truth, binary_preds)
 
+
 def multiclass_acc(preds, truths):
     """
     Compute the multiclass accuracy w.r.t. groundtruth
@@ -29,6 +31,7 @@ def multiclass_acc(preds, truths):
     :return: Classification accuracy
     """
     return np.sum(np.round(preds) == np.round(truths)) / float(len(truths))
+
 
 def eval_mosei_senti_return(results, truths, exclude_zero=False):
     test_preds = results.view(-1).cpu().detach().numpy()
@@ -39,8 +42,8 @@ def eval_mosei_senti_return(results, truths, exclude_zero=False):
 
     test_preds_a7 = np.clip(test_preds, a_min=-3., a_max=3.)
     test_truth_a7 = np.clip(test_truth, a_min=-3., a_max=3.)
-    test_preds_a5 = np.clip(test_preds, a_min=-2., a_max=2.)
-    test_truth_a5 = np.clip(test_truth, a_min=-2., a_max=2.)
+    # test_preds_a5 = np.clip(test_preds, a_min=-2., a_max=2.)
+    # test_truth_a5 = np.clip(test_truth, a_min=-2., a_max=2.)
 
     # Average L1 distance between preds and truths
     mae = np.mean(np.absolute(test_preds - test_truth))
