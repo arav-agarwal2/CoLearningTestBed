@@ -208,8 +208,8 @@ def get_dataloader(
 
     for dataset in alldata:
         processed_dataset[dataset] = alldata[dataset]
-    processed_dataset['test']['vision'] = np.zeros(alldata['test']['vision'].shape)
-    processed_dataset['test']['audio'] = np.zeros(alldata['test']['audio'].shape)
+    # processed_dataset['test']['vision'] = np.zeros(alldata['test']['vision'].shape)
+    # processed_dataset['test']['audio'] = np.zeros(alldata['test']['audio'].shape)
 
     train = DataLoader(MOSI(processed_dataset['train'], flatten_time_series, task=task, max_pad=max_pad, max_pad_num=max_seq_len, z_norm=z_norm),
                        shuffle=train_shuffle, num_workers=num_workers, batch_size=batch_size,
