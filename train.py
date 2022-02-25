@@ -52,10 +52,8 @@ def deal_with_objective(objective, pred, truth, args):
     else:
         return objective(pred, truth, args)
 
-def train(
-        encoders, fusion, head, train_dataloader, valid_dataloader, total_epochs, additional_optimizing_modules=[], is_packed=False,
-        early_stop=False, task="classification", optimtype=torch.optim.RMSprop, lr=0.001, weight_decay=0.0,
-        objective=nn.CrossEntropyLoss(), save='best.pt',objective_args_dict=None, input_to_float=True, clip_val=8):
+
+def train(encoders, fusion, head, train_dataloader, valid_dataloader, total_epochs, additional_optimizing_modules=[], is_packed=False, early_stop=False, task="classification", optimtype=torch.optim.RMSprop, lr=0.001, weight_decay=0.0, objective=nn.CrossEntropyLoss(), save='best.pt', objective_args_dict=None, input_to_float=True, clip_val=8):
     model = MMDL(encoders, fusion, head, has_padding=is_packed).cuda()
 
     def trainprocess():
