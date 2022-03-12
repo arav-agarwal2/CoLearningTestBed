@@ -1,10 +1,10 @@
+"""Found in Translation"""
 from test import test
+import torch
+from torch import nn
 from train_mctn import train
 from encoders import MLP, Encoder, Decoder
 from mosi_get_data import get_dataloader
-
-import torch
-from torch import nn
 
 
 traindata, validdata, testdata = get_dataloader('/content/mosi_raw.pkl')

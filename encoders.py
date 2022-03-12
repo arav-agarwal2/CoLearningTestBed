@@ -1,3 +1,4 @@
+"""Encoders"""
 import math
 import torch
 
@@ -36,7 +37,8 @@ class GRU(torch.nn.Module):
     GRU Implementation.
     """
 
-    def __init__(self, indim, hiddim, dropout=False, dropoutp=0.1, flatten=False, has_padding=False, last_only=False, batch_first=True):
+    def __init__(self, indim, hiddim, dropout=False, dropoutp=0.1, flatten=False, has_padding=False,
+                 last_only=False, batch_first=True):
         super(GRU, self).__init__()
         self.gru = nn.GRU(indim, hiddim, batch_first=True)
         self.dropout = dropout

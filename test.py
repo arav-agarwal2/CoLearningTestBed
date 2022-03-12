@@ -12,13 +12,12 @@ def test(
     def processinput(inp):
         if input_to_float:
             return inp.float()
-        else:
-            return inp
+        return inp
     with torch.no_grad():
         totalloss = 0.0
         pred = []
         true = []
-        pts = []
+        # pts = []
         for j in test_dataloader:
             model.eval()
             if is_packed:
@@ -27,10 +26,10 @@ def test(
             else:
                 out = model([processinput(i).float().cuda()
                              for i in j[:-1]])
-            if type(criterion) == torch.nn.modules.loss.BCEWithLogitsLoss or type(criterion) == torch.nn.MSELoss:
+            if isinstance(criterion, (torch.nn.MSELoss, torch.nn.modules.loss.BCEWithLogitsLoss)):
                 loss = criterion(out, j[-1].float().cuda())
 
-            elif type(criterion) == nn.CrossEntropyLoss:
+            elif isinstance(criterion, nn.CrossEntropyLoss):
                 if len(j[-1].size()) == len(out.size()):
                     truth1 = j[-1].squeeze(len(out.size())-1)
                 else:
@@ -55,8 +54,8 @@ def test(
         if pred:
             pred = torch.cat(pred, 0)
         true = torch.cat(true, 0)
-        totals = true.shape[0]
-        testloss = totalloss/totals
+        # totals = true.shape[0]
+        # testloss = totalloss/totals
         if task == "classificaton":
             print("acc: "+str(accuracy(true, pred)))
             return {'Accuracy': accuracy(true, pred)}
