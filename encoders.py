@@ -145,3 +145,4 @@ class Decoder(nn.Module):
         output = self.out(torch.cat([output, context], 1))
         output = F.log_softmax(output, dim=1)
         return output, hidden, attn_weights
+
