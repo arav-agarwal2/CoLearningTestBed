@@ -33,7 +33,7 @@ def multiclass_acc(preds, truths):
     return np.sum(np.round(preds) == np.round(truths)) / float(len(truths))
 
 
-def eval_mosei_senti_return(results, truths, exclude_zero=False):
+def eval_mosi(results, truths, exclude_zero=False):
     test_preds = results.view(-1).cpu().detach().numpy()
     test_truth = truths.view(-1).cpu().detach().numpy()
 
@@ -42,14 +42,14 @@ def eval_mosei_senti_return(results, truths, exclude_zero=False):
 
     test_preds_a7 = np.clip(test_preds, a_min=-3., a_max=3.)
     test_truth_a7 = np.clip(test_truth, a_min=-3., a_max=3.)
-    # test_preds_a5 = np.clip(test_preds, a_min=-2., a_max=2.)
-    # test_truth_a5 = np.clip(test_truth, a_min=-2., a_max=2.)
+    test_preds_a5 = np.clip(test_preds, a_min=-2., a_max=2.)
+    test_truth_a5 = np.clip(test_truth, a_min=-2., a_max=2.)
 
     # Average L1 distance between preds and truths
     mae = np.mean(np.absolute(test_preds - test_truth))
     corr = np.corrcoef(test_preds, test_truth)[0][1]
     mult_a7 = multiclass_acc(test_preds_a7, test_truth_a7)
-    # mult_a5 = multiclass_acc(test_preds_a5, test_truth_a5)
+    mult_a5 = multiclass_acc(test_preds_a5, test_truth_a5)
     f_score = f1_score((test_preds[non_zeros] > 0),
                        (test_truth[non_zeros] > 0), average='weighted')
     binary_truth = (test_truth[non_zeros] > 0)

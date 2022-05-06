@@ -3,14 +3,14 @@ import random
 import torch
 from torch import nn
 from fusion import MFN
-from train import train_mfn
+from train_mfn import train
 from test import test
 from mosi_get_data import get_dataloader
 
-traindata, validdata, testdata = get_dataloader('/content/mosi_raw.pkl')
+traindata, validdata, testdata = get_dataloader('/content/drive/MyDrive/colearning/mosi_raw.pkl')
 
 config = dict()
-config["input_dims"] = [300,5,20]
+config["input_dims"] = [300,74,35]
 hl = random.choice([32,64,88,128,156,256])
 ha = random.choice([8,16,32,48,64,80])
 hv = random.choice([8,16,32,48,64,80])
@@ -36,11 +36,12 @@ gamma2Config["drop"] = random.choice([0.0,0.2,0.5,0.7])
 outConfig = dict()
 outConfig["shapes"] = random.choice([32,64,128,256])
 outConfig["drop"] = random.choice([0.0,0.2,0.5,0.7])
+configs = [config, NN1Config, NN2Config, gamma1Config, gamma2Config, outConfig]
 model = MFN(config, NN1Config, NN2Config, gamma1Config, gamma2Config, outConfig)
 
-train_mfn(
-        model, config,
-        traindata, validdata,
-        criterion=nn.L1Loss(),
-        optimtype=torch.optim.Adam,
-        model_save='best_mfn.pt')
+train(
+      model, configs,
+      traindata, validdata,
+      criterion=nn.L1Loss(),
+      optimtype=torch.optim.Adam,
+      model_save='best_mfn.pt')

@@ -5,8 +5,7 @@ from mosi_get_data import get_dataloader
 from fusion import Concat
 import torch
 
-traindata, validdata, testdata = get_dataloader(
-    '/content/mosi_raw.pkl')
+traindata, validdata, testdata = get_dataloader('/content/drive/MyDrive/colearning/mosi_raw.pkl')
 
 encoders = [GRU(35, 70, dropout=True, has_padding=True, batch_first=True).cuda(),
             GRU(74, 200, dropout=True, has_padding=True, batch_first=True).cuda(),

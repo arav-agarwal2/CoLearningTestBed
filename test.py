@@ -17,12 +17,10 @@ def test(
         totalloss = 0.0
         pred = []
         true = []
-        # pts = []
         for j in test_dataloader:
             model.eval()
             if is_packed:
-                out = model([[processinput(i).cuda()
-                              for i in j[0]], j[1]])
+                out = model([[processinput(i).cuda() for i in j[0]], j[1]])
             else:
                 out = model([processinput(i).float().cuda()
                              for i in j[:-1]])
@@ -50,12 +48,11 @@ def test(
                         prede.append(-1)
                     else:
                         prede.append(0)
+                pred.append(torch.LongTensor(prede))
             true.append(j[-1])
         if pred:
             pred = torch.cat(pred, 0)
         true = torch.cat(true, 0)
-        # totals = true.shape[0]
-        # testloss = totalloss/totals
         if task == "classificaton":
             print("acc: "+str(accuracy(true, pred)))
             return {'Accuracy': accuracy(true, pred)}
