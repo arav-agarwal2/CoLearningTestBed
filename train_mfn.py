@@ -3,7 +3,7 @@ import random
 import numpy as np
 import torch
 from torch import nn
-from eval_metrics import accuracy
+from sklearn.metrics import accuracy_score, f1_score
 
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -59,3 +59,23 @@ def train(model, configs, train_dataloader, valid_dataloader, criterion=nn.L1Los
                 if patience > 7:
                     break
     trainprocess()
+
+def test(model, test_dataloader):
+    with torch.no_grad():
+        pred = []
+        true = []
+        for j in test_dataloader:
+            model.eval()
+            predictions = model.forward(j[0]).cpu().data.numpy()
+            pred.append(predictions)
+            label = j[-1]
+            true.append(label)
+        pred = np.concatenate(pred, 0)
+        true = np.concatenate(true, 0)
+        mae = np.mean(np.absolute(pred - true))
+        mult = round(np.sum(np.round(pred) == np.round(true))/float(len(true)), 5)
+        f_score = round(f1_score(np.round(pred),np.round(true), average='weighted'), 5)
+        true_label = (true >= 0)
+        predicted_label = (pred >= 0)
+        acc = accuracy_score(true_label, predicted_label)
+        print('Test: MAE: {}, Mult Acc: {}, Mult f_score: {}, Acc: {}'.format(mae, mult, f_score, acc))

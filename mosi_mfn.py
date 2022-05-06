@@ -3,8 +3,7 @@ import random
 import torch
 from torch import nn
 from fusion import MFN
-from train_mfn import train
-from test import test
+from train_mfn import train, test
 from mosi_get_data import get_dataloader
 
 traindata, validdata, testdata = get_dataloader('/content/drive/MyDrive/colearning/mosi_raw.pkl')
@@ -39,9 +38,13 @@ outConfig["drop"] = random.choice([0.0,0.2,0.5,0.7])
 configs = [config, NN1Config, NN2Config, gamma1Config, gamma2Config, outConfig]
 model = MFN(config, NN1Config, NN2Config, gamma1Config, gamma2Config, outConfig)
 
-train(
-      model, configs,
+train(model, configs,
       traindata, validdata,
       criterion=nn.L1Loss(),
       optimtype=torch.optim.Adam,
       model_save='best_mfn.pt')
+
+print("Testing:")
+model = torch.load('best_mfn.pt').cuda()
+
+test(model, testdata)
