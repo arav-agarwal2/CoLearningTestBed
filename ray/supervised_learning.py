@@ -7,6 +7,7 @@ from eval_scripts.performance import AUPRC, f1_score, accuracy, eval_affect
 from eval_scripts.complexity import all_in_one_train, all_in_one_test
 from eval_scripts.robustness import relative_robustness, effective_robustness, single_plot
 from tqdm import tqdm
+import os
 
 from ray import tune
 
@@ -131,7 +132,6 @@ def train(
                 return inp.float()
             else:
                 return inp
-
         for epoch in range(total_epochs):
             totalloss = 0.0
             totals = 0
@@ -216,7 +216,7 @@ def train(
                 acc = accuracy(true, pred)
                 print("Epoch "+str(epoch)+" valid loss: "+str(valloss) +
                       " acc: "+str(acc))
-                tune.report(mean_accuracy=acc)
+                tune.report(valid_loss=valloss.item())
                 if acc > bestacc:
                     patience = 0
                     bestacc = acc
@@ -238,10 +238,11 @@ def train(
                     patience += 1
             elif task == "regression":
                 print("Epoch "+str(epoch)+" valid loss: "+str(valloss.item()))
+                tune.report(valid_loss=valloss.item())
                 if valloss < bestvalloss:
                     patience = 0
                     bestvalloss = valloss
-                    print("Saving Best")
+                    print("Saving best to {}".format(os.getcwd()))
                     torch.save(model, save)
                 else:
                     patience += 1
