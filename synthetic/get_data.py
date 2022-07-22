@@ -1,10 +1,9 @@
-import numpy as np
 import torch
 import pickle
 from torch.utils.data import Dataset, DataLoader
 
 
-def get_dataloader(path, batch_size=32, num_workers=4):
+def get_dataloader(path, keys=['a','b','label'], modalities=[0,1], batch_size=32, num_workers=4):
     try:
         with open(path, "rb") as f:
             data = pickle.load(f)
@@ -12,27 +11,28 @@ def get_dataloader(path, batch_size=32, num_workers=4):
     except Exception as ex:
         print("Error during unpickling object", ex)
         exit()
-    num_samples = len(data['label'])
+    label = keys[-1]
+    num_samples = len(data[label])
     train_split = num_samples // 10 * 8
     valid_split = train_split + num_samples // 10
     train_data = {k:v[:train_split] for (k,v) in data.items()}
-    print("Train data: {}".format(train_data['label'].shape[0]))
+    print("Train data: {}".format(train_data[label].shape[0]))
     valid_data = {k:v[train_split:valid_split] for (k,v) in data.items()}
-    print("Valid data: {}".format(valid_data['label'].shape[0]))
+    print("Valid data: {}".format(valid_data[label].shape[0]))
     test_data = {k:v[valid_split:] for (k,v) in data.items()}
-    print("Test data: {}".format(test_data['label'].shape[0]))
+    print("Test data: {}".format(test_data[label].shape[0]))
 
-    traindata = DataLoader(SyntheticDataset(train_data,),
+    traindata = DataLoader(SyntheticDataset(train_data, keys, modalities=modalities),
                     shuffle=True, 
                     num_workers=num_workers, 
                     batch_size=batch_size, 
                     collate_fn=process_input)
-    validdata = DataLoader(SyntheticDataset(valid_data,),
+    validdata = DataLoader(SyntheticDataset(valid_data, keys, modalities=modalities),
                         shuffle=False, 
                         num_workers=num_workers, 
                         batch_size=batch_size, 
                         collate_fn=process_input)
-    testdata = DataLoader(SyntheticDataset(test_data),
+    testdata = DataLoader(SyntheticDataset(test_data, keys, modalities=modalities),
                         shuffle=False, 
                         num_workers=num_workers, 
                         batch_size=batch_size, 
@@ -42,14 +42,20 @@ def get_dataloader(path, batch_size=32, num_workers=4):
 
 
 class SyntheticDataset(Dataset):
-    def __init__(self, data):
+    def __init__(self, data, keys, modalities):
         self.data = data
+        self.keys = keys
+        self.modalities = modalities
         
     def __len__(self):
-        return len(self.data['label'])
+        return len(self.data[self.keys[-1]])
 
     def __getitem__(self, index):
-        return (torch.tensor(self.data['a'][index]), torch.tensor(self.data['b'][index]), torch.tensor(self.data['label'][index]))
+        tmp = []
+        for i in self.modalities:
+            tmp.append(torch.tensor(self.data[self.keys[i]][index]))
+        tmp.append(torch.tensor(self.data[self.keys[-1]][index]))
+        return tmp
 
 
 def process_input(inputs):
@@ -65,4 +71,4 @@ def process_input(inputs):
     for sample in inputs:  
         labels.append(sample[-1])
         
-    return processed_input[0], processed_input[1], torch.tensor(labels).view(len(inputs), 1)
+    return processed_input, torch.tensor(labels).view(len(inputs), 1)
