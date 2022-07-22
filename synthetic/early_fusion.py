@@ -49,4 +49,4 @@ train(encoders, fusion, head, traindata, validdata, args.epochs, optimtype=torch
 # Testing
 print("Testing:")
 model = torch.load(args.saved_model).to(device)
-test(model, testdata, is_packed=False, no_robust=True, criterion=torch.nn.CrossEntropyLoss(), modalities=modalities)
+test(model, testdata, no_robust=True, criterion=torch.nn.CrossEntropyLoss(), modalities=modalities)

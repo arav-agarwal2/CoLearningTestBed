@@ -12,7 +12,6 @@ import argparse
 import json
 import ast
 
-
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 parser = argparse.ArgumentParser()
@@ -41,13 +40,13 @@ traindata, validdata, testdata = get_dataloader(path=args.data_path, keys=keys, 
 # Specify late fusion model
 out_dim = args.output_dim * len(modalities)
 encoders = [Linear(args.input_dim, args.output_dim).to(device) for _ in modalities]
-head = MLP(out_dim, args.hidden_dim, args.num_classes).cuda()
+head = MLP(out_dim, args.hidden_dim, args.num_classes).to(device)
 fusion = Concat().cuda()
 
 # Training
-train(encoders, fusion, head, traindata, validdata, args.epochs, task="regression", optimtype=torch.optim.AdamW, early_stop=False, is_packed=False, lr=args.lr, save=args.saved_model, weight_decay=args.weight_decay, objective=torch.nn.CrossEntropyLoss(), modalities=modalities)
+train(encoders, fusion, head, traindata, validdata, args.epochs, optimtype=torch.optim.AdamW, early_stop=False, is_packed=False, lr=args.lr, save=args.saved_model, weight_decay=args.weight_decay, objective=torch.nn.CrossEntropyLoss(), modalities=modalities)
 
 # Testing
 print("Testing:")
 model = torch.load(args.saved_model).to(device)
-test(model, testdata, is_packed=False, no_robust=True, criterion=torch.nn.CrossEntropyLoss(), modalities=modalities)
+test(model, testdata, no_robust=True, criterion=torch.nn.CrossEntropyLoss(), modalities=modalities)
