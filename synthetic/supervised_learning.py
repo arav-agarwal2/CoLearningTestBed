@@ -240,9 +240,7 @@ def train(
         _trainprocess()
 
 
-def single_test(
-        model, test_dataloader,
-        criterion=nn.CrossEntropyLoss(), task="classification", auprc=False, input_to_float=True, modalities=[0,1,2]):
+def single_test(model, test_dataloader, criterion=nn.CrossEntropyLoss(), task="classification", auprc=False, input_to_float=True, modalities=[0,1,2]):
     """Run single test for model.
 
     Args:
@@ -339,13 +337,13 @@ def test(
     """
     if no_robust:
         def _testprocess():
-            single_test(model, test_dataloaders_all, is_packed, criterion, task, auprc, input_to_float, modalities)
+            single_test(model, test_dataloaders_all, criterion, task, auprc, input_to_float, modalities)
         t, acc = all_in_one_test(_testprocess, [model])
         return t, acc
 
     def _testprocess():
         single_test(model, test_dataloaders_all[list(test_dataloaders_all.keys())[
-                    0]][0], is_packed, criterion, task, auprc, input_to_float, modalities)
+                    0]][0], criterion, task, auprc, input_to_float, modalities)
     all_in_one_test(_testprocess, [model])
     for noisy_modality, test_dataloaders in test_dataloaders_all.items():
         print("Testing on noisy data ({})...".format(noisy_modality))
