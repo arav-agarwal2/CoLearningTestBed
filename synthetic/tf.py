@@ -1,15 +1,15 @@
 import torch
 import sys
 import os
+import numpy as np
 sys.path.append(os.getcwd())
 sys.path.append(os.path.dirname(os.path.dirname(os.getcwd())))
-from unimodals.common_models import MLP, Identity
+from unimodals.common_models import MLP, Linear
 from get_data import get_dataloader
 from supervised_learning import train, test
-from fusions.common_fusions import Concat
+from fusions.common_fusions import TensorFusion
 
 import argparse
-
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -20,23 +20,24 @@ parser.add_argument("--modalities", nargs='+', default=[0,1], type=list, help="s
 parser.add_argument("--bs", default=32, type=int)
 parser.add_argument("--num-workers", default=4, type=int)
 parser.add_argument("--input-dim", default=30, type=int)
+parser.add_argument("--output-dim", default=128, type=int)
 parser.add_argument("--hidden-dim", default=512, type=int)
+parser.add_argument("--rank", default=32, type=int)
 parser.add_argument("--num-classes", default=2, type=int)
 parser.add_argument("--epochs", default=100, type=int)
 parser.add_argument("--lr", default=1e-4, type=float)
-parser.add_argument("--weight-decay", default=0, type=float)
-parser.add_argument("--eval", default=True, type=int)
-parser.add_argument("--saved-model", default='/home/yuncheng/early_fusion_best.pt', type=str)
+parser.add_argument("--weight-decay", default=0.01, type=float)
+parser.add_argument("--saved-model", default='/home/yuncheng/tf_best.pt', type=str)
 args = parser.parse_args()
 
 # Load data
-traindata, validdata, testdata = get_dataloader(path=args.data_path, keys=args.key, modalities=args.modalities, batch_size=args.bs, num_workers=args.num_workers)
+traindata, validdata, testdata = get_dataloader(path=args.data_path, keys=args.keys, modalities=args.modalities, batch_size=args.bs, num_workers=args.num_workers)
 
-# Specify early fusion model
-out_dim = args.input_dim * len(args.modalities)
-encoders = [Identity().to(device) for _ in args.modalities]
-fusion = Concat().to(device)
+# Specify tensor fusion model
+out_dim = np.prod(np.array([args.output_dim] * len(args.modalities))+1) if len(args.modalities) > 1 else args.output_dim
+encoders = [Linear(args.input_dim, args.output_dim).to(device) for _ in args.modalities]
 head = MLP(out_dim, args.hidden_dim, args.num_classes).to(device)
+fusion = TensorFusion().to(device)
 
 # Training
 train(encoders, fusion, head, traindata, validdata, args.epochs, optimtype=torch.optim.AdamW, is_packed=False, lr=args.lr, save=args.saved_model, weight_decay=args.weight_decay, objective=torch.nn.CrossEntropyLoss(), modalities=args.modalities)
@@ -44,4 +45,4 @@ train(encoders, fusion, head, traindata, validdata, args.epochs, optimtype=torch
 # Testing
 print("Testing:")
 model = torch.load(args.saved_model).to(device)
-test(model, testdata, no_robust=True, criterion=torch.nn.CrossEntropyLoss(), modalities=args.modalities)
+test(model, testdata, is_packed=False, no_robust=True, criterion=torch.nn.CrossEntropyLoss(), modalities=args.modalities)
