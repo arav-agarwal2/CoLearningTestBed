@@ -25,14 +25,14 @@ parser.add_argument("--eval", default=True, type=int)
 parser.add_argument("--output-path", default='/home/yuncheng/best.pt', type=str)
 args = parser.parse_args()
 
-traindata, validdata, testdata = get_dataloader(path="/home/yuncheng/MultiBench/synthetic/data.pickle", batch_size=args.bs, num_workers=args.num_workers)
+traindata, validdata, testdata = get_dataloader(path="/home/yuncheng/MultiBench/synthetic/SIMPLE_DATA_CLASS=2_DIM=1_STD=0.5.pickle", batch_size=args.bs, num_workers=args.num_workers)
 
 modalities = json.loads(args.modalities)
 input_dim = args.input_dim * len(modalities)
 encoders = [Identity().to(device), Identity().to(device)]
 fusion = Concat().to(device)
 head = MLP(input_dim, args.hidden_dim, 2).to(device)
-train(encoders, fusion, head, traindata, validdata, args.epochs, optimtype=torch.optim.AdamW, is_packed=False, lr=1e-5, save=args.output_path, weight_decay=0, objective=torch.nn.CrossEntropyLoss(), modalities=modalities)
+train(encoders, fusion, head, traindata, testdata, args.epochs, optimtype=torch.optim.Adam, is_packed=False, lr=1e-4, save=args.output_path, weight_decay=0, objective=torch.nn.CrossEntropyLoss(), modalities=modalities)
 
 print("Testing:")
 model = torch.load(args.output_path).to(device)

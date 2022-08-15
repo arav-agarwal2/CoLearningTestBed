@@ -88,7 +88,7 @@ def train(
         encoders, fusion, head, train_dataloader, valid_dataloader, total_epochs, additional_optimizing_modules=[], is_packed=False,
         early_stop=False, task="classification", optimtype=torch.optim.RMSprop, lr=0.001, weight_decay=0.0,
         objective=nn.CrossEntropyLoss(), auprc=False, save='best.pt', validtime=False, objective_args_dict=None, input_to_float=True, clip_val=8,
-        track_complexity=True, modalities=[0,1,2]):
+        track_complexity=True):
     """
     Handle running a simple supervised training loop.
     
@@ -240,7 +240,7 @@ def train(
         _trainprocess()
 
 
-def single_test(model, test_dataloader, criterion=nn.CrossEntropyLoss(), task="classification", auprc=False, input_to_float=True, modalities=[0,1,2]):
+def single_test(model, test_dataloader, criterion=nn.CrossEntropyLoss(), task="classification", auprc=False, input_to_float=True):
     """Run single test for model.
 
     Args:
@@ -326,7 +326,7 @@ def single_test(model, test_dataloader, criterion=nn.CrossEntropyLoss(), task="c
 
 
 def test(
-        model, test_dataloaders_all, dataset='default', method_name='My method', is_packed=False, criterion=nn.CrossEntropyLoss(), task="classification", auprc=False, input_to_float=True, no_robust=False, modalities=[0,1,2]):
+        model, test_dataloaders_all, dataset='default', method_name='My method', is_packed=False, criterion=nn.CrossEntropyLoss(), task="classification", auprc=False, input_to_float=True, no_robust=False):
     """
     Handle getting test results for a simple supervised training loop.
     
@@ -337,20 +337,20 @@ def test(
     """
     if no_robust:
         def _testprocess():
-            single_test(model, test_dataloaders_all, criterion, task, auprc, input_to_float, modalities)
+            single_test(model, test_dataloaders_all, criterion, task, auprc, input_to_float)
         t, acc = all_in_one_test(_testprocess, [model])
         return t, acc
 
     def _testprocess():
         single_test(model, test_dataloaders_all[list(test_dataloaders_all.keys())[
-                    0]][0], criterion, task, auprc, input_to_float, modalities)
+                    0]][0], criterion, task, auprc, input_to_float)
     all_in_one_test(_testprocess, [model])
     for noisy_modality, test_dataloaders in test_dataloaders_all.items():
         print("Testing on noisy data ({})...".format(noisy_modality))
         robustness_curve = dict()
         for test_dataloader in tqdm(test_dataloaders):
             single_test_result = single_test(
-                model, test_dataloader, is_packed, criterion, task, auprc, input_to_float, modalities)
+                model, test_dataloader, is_packed, criterion, task, auprc, input_to_float)
             for k, v in single_test_result.items():
                 curve = robustness_curve.get(k, [])
                 curve.append(v)
