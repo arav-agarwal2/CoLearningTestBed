@@ -2,6 +2,7 @@ data/
 ray/*.txt
 ray/*.ipynb
 synthetic/*.pickle
+synthetic/*.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

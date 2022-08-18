@@ -1,0 +1,125 @@
+import torch
+from torch import nn
+from mctn_model import Translation, MCTN
+from eval_scripts.performance import accuracy
+
+
+softmax = nn.Softmax()
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
+def train(traindata, validdata, encoders, decoders, head, epoch=100, level=2, criterion_t=nn.MSELoss(), criterion_c=nn.MSELoss(), criterion_r=nn.CrossEntropyLoss(), mu_t=0.01, mu_c=0.01, dropout_p=0.1, early_stop=False, patience_num=15, lr=1e-4, weight_decay=0.01, op_type=torch.optim.AdamW, save='best_mctn.pt'):
+    translations = zip(encoders, decoders)
+    translations = [Translation(encoder, decoder).to(device) for encoder, decoder in translations]
+    model = MCTN(translations, head, p=dropout_p).to(device)
+    op = op_type(model.parameters(), lr=lr, weight_decay=weight_decay)
+    criterion_t = [criterion_t] * level
+    criterion_c = [criterion_c] * level
+
+    patience = 0
+    bestacc = 0
+
+    for ep in range(epoch):
+        model.train()
+        print('start training ---------->>')
+
+        sum_total_loss = 0
+        sum_loss = 0
+        total_batch = 0
+        for inputs in traindata:
+            src, trgs, labels = _process_input(inputs)
+            translation_losses = []
+            cyclic_losses = []
+            total_loss = 0
+
+            op.zero_grad()
+
+            outs, reouts, head_out = model(src, trgs)
+
+            for i in range(len(outs)):
+                out = outs[i]
+                translation_loss = 0
+                for j, o in enumerate(out):
+                    translation_loss += criterion_t[i](o, trgs[i][j])
+                translation_loss /= out.size(0)
+                translation_losses.append(translation_loss)
+
+            for i in range(len(reouts)):
+                reout = reouts[i]
+                cyclic_loss = 0
+                if i == 0:
+                    for j, o in enumerate(reout):
+                        cyclic_loss += criterion_c[i](o, src[j])
+                else:
+                    for j, o in enumerate(reout):
+                        cyclic_loss += criterion_c[i](o, trgs[i-1][j])
+                cyclic_loss /= reout.size(0)
+                cyclic_losses.append(cyclic_loss)
+            loss = criterion_r(head_out, labels)
+
+            total_loss = mu_t * sum(translation_losses) + mu_c * sum(cyclic_losses) + loss
+
+            sum_total_loss += total_loss
+            sum_loss += loss
+            total_batch += 1
+
+            total_loss.backward()
+            op.step()
+
+        sum_total_loss /= total_batch
+        sum_loss /= total_batch
+
+        print('Train Epoch {}, total loss: {}, regression loss: {}, embedding loss: {}'.format(ep, sum_total_loss, sum_loss, sum_total_loss - sum_loss))
+
+        model.eval()
+        print('Start Evaluating ---------->>')
+        pred = []
+        true = []
+        with torch.no_grad():
+            for inputs in validdata:
+                src, trgs, labels = _process_input(inputs)
+                _, _, head_out = model(src, trgs)
+                pred.append(torch.argmax(head_out, 1))
+                true.append(labels)
+            if pred:
+                pred = torch.cat(pred, 0)
+            true = torch.cat(true, 0)
+            acc = accuracy(true, pred)
+            print('Eval Epoch: {}, Acc: {}'.format(ep, acc))
+
+            if acc > bestacc:
+                patience = 0
+                bestacc = acc
+                print('<------------ Saving Best Model')
+                print()
+                torch.save(model, save)
+            else:
+                patience += 1
+            if early_stop and patience > patience_num:
+                break
+
+
+def test(model, testdata):
+    model.eval()
+    print('Start Testing ---------->>')
+    pred = []
+    true = []
+    with torch.no_grad():
+        for inputs in testdata:
+            src, trgs, labels = _process_input(inputs)
+            _, _, head_out = model(src, trgs)
+            pred.append(torch.argmax(head_out, 1))
+            true.append(labels)
+        if pred:
+            pred = torch.cat(pred, 0)
+        true = torch.cat(true, 0)
+        acc = accuracy(true, pred)
+        print('Test Acc: {}'.format(acc))
+
+
+def _process_input(inputs):
+    labels = inputs[-1]
+    labels = labels.squeeze(len(labels.size())-1).long().to(device)
+    inputs = inputs[0]
+    src = inputs[0].float().to(device)
+    trgs = [input.float().to(device) for input in inputs[0:]]
+    return src, trgs, labels
