@@ -13,10 +13,6 @@ def get_dataloader(path, keys=['a','b','label'], modalities=[0,1], batch_size=32
     label = keys[-1]
     print("Train data: {}".format(data['train'][label].shape[0]))
     print("Test data: {}".format(data['test'][label].shape[0]))
-    # print(data['train']['a'][:3])
-    # print(data['train']['b'][:3])
-    # print(data['train']['label'][:3])
-    # sys.exit(0)
 
     traindata = DataLoader(SyntheticDataset(data['train'], keys, modalities=modalities),
                     shuffle=True, 
@@ -53,7 +49,7 @@ class SyntheticDataset(Dataset):
             if modality:
                 tmp.append(torch.tensor(self.data[self.keys[i]][index]))
             else:
-                tmp.append(torch.zeros(self.data[self.keys[i]][index].size))
+                tmp.append(torch.ones(self.data[self.keys[i]][index].size))
         tmp.append(torch.tensor(self.data[self.keys[-1]][index]))
         return tmp
 
