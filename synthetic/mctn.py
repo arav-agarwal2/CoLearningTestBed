@@ -32,9 +32,9 @@ torch.multiprocessing.set_sharing_strategy('file_system')
 traindata, _, testdata = get_dataloader(path=args.data_path, keys=args.keys, modalities=args.modalities, batch_size=args.bs, num_workers=args.num_workers)
 
 # Specify MCTN model
-encoders = [MLP(args.input_dim, args.hidden_dim, args.input_dim).to(device)] + [MLP(args.input_dim, args.hidden_dim, args.input_dim).to(device)] * (len(args.modalities)-1)
-decoders = [MLP(args.input_dim, args.hidden_dim, args.input_dim).to(device) for _ in args.modalities]
-head = MLP(args.input_dim, args.input_dim*2, args.num_classes).to(device)
+encoders = [MLP(args.input_dim, args.hidden_dim).to(device)] + [MLP(args.hidden_dim, args.hidden_dim).to(device)] * (len(args.modalities)-1)
+decoders = [MLP(args.hidden_dim, args.input_dim).to(device) for _ in args.modalities]
+head = MLP(args.hidden_dim, args.hidden_dim*2, args.num_classes).to(device)
 
 # Training
 train(traindata, testdata, encoders, decoders, head, args.epochs, level=len(args.modalities), op_type=torch.optim.AdamW, lr=args.lr, save=args.saved_model, weight_decay=args.weight_decay)

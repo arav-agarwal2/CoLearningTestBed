@@ -5,22 +5,21 @@ from torch.nn import functional as F
 
 class MLP(nn.Module):
 
-    def __init__(self, indim, hiddim, outdim, dropout=False, dropoutp=0.1):
+    def __init__(self, indim, outdim, dropout=False, dropoutp=0.1):
         super(MLP, self).__init__()
-        self.fc = nn.Linear(indim, hiddim)
-        self.fc2 = nn.Linear(hiddim, outdim)
+        self.indim = indim
+        self.fc = nn.Linear(indim, outdim)
         self.dropout_layer = torch.nn.Dropout(dropoutp)
         self.dropout = dropout
         self.lklu = nn.LeakyReLU(0.2)
 
     def forward(self, x):
+        # if x.shape[1] != self.indim:
+        #     x = nn.Linear(x.shape[1], self.indim)(x)
         output = F.relu(self.fc(x))
         if self.dropout:
             output = self.dropout_layer(output)
-        output2 = self.fc2(output)
-        if self.dropout:
-            output2 = self.dropout_layer(output)
-        return self.lklu(output2)
+        return self.lklu(output)
 
 
 class Translation(nn.Module):
@@ -45,25 +44,25 @@ class MCTN(nn.Module):
         self.head = head
 
     def forward(self, src, trgs):
-        out, _ = self.translations[0](src)
+        out, joint_embbed = self.translations[0](src)
         outs = [out]
-        reouts = None
+        reouts = []
         if self.training:
-            reout, joint_embbed = self.translations[0](out)
-            reouts = [reout]
+            # reout, joint_embbed = self.translations[0](out)
+            # reouts = [reout]
             for i in range(1, len(trgs)-1):
-                out, _ = self.translations[i](joint_embbed)
-                reout, joint_embbed = self.translations[i](out)
+                out, joint_embbed = self.translations[i](joint_embbed)
+                # reout, joint_embbed = self.translations[i](out)
                 outs.append(out)
-                reouts.append(reout)
+                # reouts.append(reout)
             out, joint_embbed = self.translations[-1](joint_embbed)
             outs.append(out)
         else:
             for i in range(1, len(trgs)):
-                joint_embbed = self.translations[i-1].encoder(out)
-                out, _ = self.translations[i](joint_embbed)
+                # joint_embbed = self.translations[i-1].encoder(out)
+                out, joint_embbed = self.translations[i](joint_embbed)
                 outs.append(out)
-            joint_embbed = self.translations[-1].encoder(out)
+            # joint_embbed = self.translations[-1].encoder(out)
         head_out = self.head(joint_embbed)
         head_out = self.dropout(head_out)
         return outs, reouts, head_out
