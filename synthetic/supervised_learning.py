@@ -201,7 +201,8 @@ def train(
                     patience = 0
                     bestacc = acc
                     print("Saving Best")
-                    torch.save(model, save)
+                    if save:
+                        torch.save(model, save)
                 else:
                     patience += 1
             elif task == "multilabel":
@@ -213,7 +214,8 @@ def train(
                     patience = 0
                     bestf1 = f1_macro
                     print("Saving Best")
-                    torch.save(model, save)
+                    if save:
+                        torch.save(model, save)
                 else:
                     patience += 1
             elif task == "regression":
@@ -222,7 +224,8 @@ def train(
                     patience = 0
                     bestvalloss = valloss
                     print("Saving Best")
-                    torch.save(model, save)
+                    if save:
+                        torch.save(model, save)
                 else:
                     patience += 1
             if early_stop and patience > 7:
@@ -233,6 +236,15 @@ def train(
             if validtime:
                 print("valid time:  "+str(validendtime-validstarttime))
                 print("Valid total: "+str(totals))
+        if not save:
+            print("Testing: ")
+            if task == "classification":
+                print("acc:", bestacc)
+            elif task == "multilabel":
+                print("f1 macro:", bestf1)
+            elif task == "regression":
+                print("loss:", bestvalloss)
+            
     if track_complexity:
         t, mem, num_params = all_in_one_train(_trainprocess, [model]+additional_optimizing_modules)
         return t, mem, num_params

@@ -27,7 +27,7 @@ parser.add_argument("--num-classes", default=2, type=int)
 parser.add_argument("--epochs", default=100, type=int)
 parser.add_argument("--lr", default=1e-4, type=float)
 parser.add_argument("--weight-decay", default=0.01, type=float)
-parser.add_argument("--saved-model", default='/home/yuncheng/tf_best.pt', type=str)
+parser.add_argument("--saved-model", default=None, type=str)
 args = parser.parse_args()
 
 # Load data
