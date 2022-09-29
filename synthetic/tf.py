@@ -43,6 +43,6 @@ fusion = TensorFusion().to(device)
 train(encoders, fusion, head, traindata, testdata, args.epochs, optimtype=torch.optim.AdamW, is_packed=False, lr=args.lr, save=args.saved_model, weight_decay=args.weight_decay, objective=torch.nn.CrossEntropyLoss())
 
 # Testing
-print("Testing:")
-model = torch.load(args.saved_model).to(device)
-test(model, testdata, is_packed=False, no_robust=True, criterion=torch.nn.CrossEntropyLoss())
+# print("Testing:")
+# model = torch.load(args.saved_model).to(device)
+# test(model, testdata, is_packed=False, no_robust=True, criterion=torch.nn.CrossEntropyLoss())

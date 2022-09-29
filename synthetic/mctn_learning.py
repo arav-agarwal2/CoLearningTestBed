@@ -1,17 +1,22 @@
 import torch
 from torch import nn
+import torch.optim as optim
+import numpy as np
 from mctn_model import Translation, MCTN
 from eval_scripts.performance import accuracy
+from torchinfo import summary
 
 
 softmax = nn.Softmax()
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-def train(traindata, validdata, encoders, decoders, head, epoch=100, level=2, criterion_t=nn.MSELoss(), criterion_c=nn.MSELoss(), criterion_r=nn.CrossEntropyLoss(), mu_t=0.01, mu_c=0.01, dropout_p=0.1, early_stop=False, patience_num=15, lr=1e-4, weight_decay=0.01, op_type=torch.optim.AdamW, save='best_mctn.pt'):
-    translations = zip(encoders, decoders)
-    translations = [Translation(encoder, decoder).to(device) for encoder, decoder in translations]
-    model = MCTN(translations, head, p=dropout_p).to(device)
+def train(traindata, validdata, encoders, decoders, head, model=None, epoch=100, level=2, criterion_t=nn.MSELoss(), criterion_c=nn.MSELoss(), criterion_r=nn.CrossEntropyLoss(), mu_t=0.01, mu_c=0.01, dropout_p=0.1, early_stop=False, patience_num=15, lr=1e-4, weight_decay=0.01, op_type=torch.optim.AdamW, save='best_mctn.pt'):
+    if not model:
+        translations = zip(encoders, decoders)
+        translations = [Translation(encoder, decoder).to(device) for encoder, decoder in translations]
+        model = MCTN(translations, head, p=dropout_p).to(device)
     op = op_type(model.parameters(), lr=lr, weight_decay=weight_decay)
+    scheduler = scheduler = optim.lr_scheduler.ReduceLROnPlateau(op, factor=0.5, patience=7, verbose=True)
     criterion_t = [criterion_t] * level
     criterion_c = [criterion_c] * level
 
@@ -74,28 +79,35 @@ def train(traindata, validdata, encoders, decoders, head, epoch=100, level=2, cr
         print('Start Evaluating ---------->>')
         pred = []
         true = []
+        val_loss = []
         with torch.no_grad():
             for inputs in validdata:
                 src, trgs, labels = _process_input(inputs)
                 _, _, head_out = model(src, trgs)
+                loss = criterion_r(head_out, labels)
+                val_loss.append(loss.item())
                 pred.append(torch.argmax(head_out, 1))
                 true.append(labels)
             if pred:
                 pred = torch.cat(pred, 0)
             true = torch.cat(true, 0)
             acc = accuracy(true, pred)
-            print('Eval Epoch: {}, Acc: {}'.format(ep, acc))
+            print('Eval Epoch: {}, val loss: {}, acc: {}'.format(ep, np.mean(val_loss), acc))
+
+            scheduler.step(np.mean(val_loss))
 
             if acc > bestacc:
                 patience = 0
                 bestacc = acc
                 print('<------------ Saving Best Model')
                 print()
-                torch.save(model, save)
+                if save:
+                    torch.save(model, save)
             else:
                 patience += 1
             if early_stop and patience > patience_num:
                 break
+    print("Testing:", bestacc)
 
 
 def test(model, testdata):

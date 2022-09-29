@@ -8,18 +8,20 @@ class MLP(nn.Module):
     def __init__(self, indim, outdim, dropout=False, dropoutp=0.1):
         super(MLP, self).__init__()
         self.indim = indim
-        self.fc = nn.Linear(indim, outdim)
+        self.fc = nn.Linear(indim, outdim//2)
+        self.fc2 = nn.Linear(outdim//2, outdim)
         self.dropout_layer = torch.nn.Dropout(dropoutp)
         self.dropout = dropout
         self.lklu = nn.LeakyReLU(0.2)
 
     def forward(self, x):
-        # if x.shape[1] != self.indim:
-        #     x = nn.Linear(x.shape[1], self.indim)(x)
         output = F.relu(self.fc(x))
         if self.dropout:
             output = self.dropout_layer(output)
-        return self.lklu(output)
+        output2 = self.fc2(output)
+        if self.dropout:
+            output2 = self.dropout_layer(output)
+        return output2
 
 
 class Translation(nn.Module):
@@ -39,7 +41,7 @@ class MCTN(nn.Module):
 
     def __init__(self, translations, head, p=0.2):
         super(MCTN, self).__init__()
-        self.translations = translations
+        self.translations = nn.ModuleList(translations)
         self.dropout = nn.Dropout(p)
         self.head = head
 
