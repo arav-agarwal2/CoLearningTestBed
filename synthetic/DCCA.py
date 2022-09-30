@@ -51,62 +51,39 @@ train_dataset = torch.utils.data.TensorDataset(*train_tensor_list)
 val_dataset = torch.utils.data.TensorDataset(*test_tensor_list)
 train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=args.bs, collate_fn= lambda x: {"views": default_collate(x)})
 val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=args.bs, collate_fn= lambda x: {"views": default_collate(x)})
-trainer = pl.Trainer(
-    max_epochs=args.epochs,
-    enable_checkpointing=False,
-    log_every_n_steps=1,
-    accelerator='cpu'
-)
 
-encoder_list = [architectures.Encoder(latent_dims=args.hidden_dim, feature_size=args.input_dim)]*len(args.modalities)
-dcca = DCCA(latent_dims=args.hidden_dim, encoders=encoder_list)
+from info_nce import InfoNCE
 
+assert args.modalities == 2
 
-trainer.fit(dcca, train_dataloader, val_dataloader)
+encoder = Linear(args.input_dim, args.output_dim).to(device)
+head = MLP(args.out_dim, args.hidden_dim, args.num_classes).to(device)
+fusion = Concat().cuda()
+criterion = InfoNCE()
+optimizer = torch.optim.Adam(encoder.parameters())
 
-# freeze parameters
+for idx in range(args.epochs):
+  losses = 0
+  for a,b in train_dataloader:
+    a_enc, b_enc = encoder(a), (b)
+    loss = criterion(a_enc,b_enc)   
+    optimizer.zero_grad()
+    loss.backward()
+    losses += loss.item()
+    optimizer.step()
+  print(losses/len(train_dataloader))
 
-for param in dcca.parameters():
+for param in encoder.parameters():
     param.requires_grad = False
 
-
-head = MLP((len(args.keys)-1)*args.hidden_dim, args.hidden_dim, args.num_classes).to(device)
-
-fusion = Concat()
-
-
-
-
-class DCCA_model(nn.Module):
-    def __init__(self):
-        super().__init__()
-        self.encoder = dcca
-        self.head = head
-        self.fusion = fusion
-    def forward(self, inputs):
-        encoded = self.encoder(inputs)
-        fused = self.fusion(encoded)
-        return self.head(fused)
-        
-
-model=  DCCA_model()
-
+encoders = [encoder for _ in range(2)]
 # Load data
 traindata, validdata, testdata = get_dataloader(path=args.data_path, keys=args.keys, modalities=args.modalities, batch_size=args.bs, num_workers=args.num_workers)
 
 
-optim = torch.optim.Adam(model.parameters(), lr=args.lr)
-criterion = torch.nn.CrossEntropyLoss()
-model.to('cpu')
+train(encoders, fusion, head, traindata, testdata, args.epochs, optimtype=torch.optim.AdamW, early_stop=False, is_packed=False, lr=args.lr, save=args.saved_model, weight_decay=args.weight_decay, objective=torch.nn.CrossEntropyLoss())
 
-for epoch in range(args.epochs):
-    for *inputs, labels in traindata:
-        #print(inputs, labels)
-        optim.zero_grad()
-        model_out = model([elem.float().to('cpu') for elem in inputs[0]])
-        print(model_out.shape)
-        loss = criterion(model_out, labels.to('cpu').reshape((-1,)))
-        loss.backward()
-        optim.step()
-
+# Testing
+print("Testing:")
+model = torch.load(args.saved_model).to(device)
 test(model, testdata, is_packed=False, no_robust=True, criterion=torch.nn.CrossEntropyLoss())
