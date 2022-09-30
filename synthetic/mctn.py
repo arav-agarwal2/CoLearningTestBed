@@ -22,7 +22,7 @@ parser.add_argument("--input-dim", default=30, type=int)
 parser.add_argument("--hidden-dim", default=512, type=int)
 parser.add_argument("--num-classes", default=2, type=int)
 parser.add_argument("--epochs", default=100, type=int)
-parser.add_argument("--lr", default=2e-3, type=float)
+parser.add_argument("--lr", default=1e-3, type=float)
 parser.add_argument("--weight-decay", default=0.01, type=float)
 parser.add_argument("--saved-model", default=None, type=str)
 args = parser.parse_args()
@@ -32,8 +32,8 @@ torch.multiprocessing.set_sharing_strategy('file_system')
 traindata, _, testdata = get_dataloader(path=args.data_path, keys=args.keys, modalities=args.modalities, batch_size=args.bs, num_workers=args.num_workers)
 
 # Specify MCTN model
-encoders = [MLP(args.input_dim, args.hidden_dim).to(device)] + [MLP(args.hidden_dim, args.hidden_dim).to(device)] * (len(args.modalities)-1)
-decoders = [MLP(args.hidden_dim, args.input_dim).to(device) for _ in args.modalities]
+encoders = [MLP(args.input_dim, args.hidden_dim//2, args.hidden_dim).to(device)] + [MLP(args.hidden_dim, args.hidden_dim//2, args.hidden_dim).to(device)] * (len(args.modalities)-1)
+decoders = [MLP(args.hidden_dim, args.hidden_dim//2, args.input_dim).to(device) for _ in args.modalities]
 head = MLP(args.hidden_dim, args.hidden_dim*2, args.num_classes).to(device)
 
 # Train the translation first

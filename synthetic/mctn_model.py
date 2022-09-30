@@ -5,11 +5,12 @@ from torch.nn import functional as F
 
 class MLP(nn.Module):
 
-    def __init__(self, indim, outdim, dropout=False, dropoutp=0.1):
+    def __init__(self, indim, hiddim, outdim, dropout=False, dropoutp=0.1):
         super(MLP, self).__init__()
         self.indim = indim
-        self.fc = nn.Linear(indim, outdim//2)
-        self.fc2 = nn.Linear(outdim//2, outdim)
+        self.outdim = outdim
+        self.fc = nn.Linear(indim, hiddim)
+        self.fc2 = nn.Linear(hiddim, outdim)
         self.dropout_layer = torch.nn.Dropout(dropoutp)
         self.dropout = dropout
         self.lklu = nn.LeakyReLU(0.2)
@@ -26,12 +27,18 @@ class MLP(nn.Module):
 
 class Translation(nn.Module):
     
-    def __init__(self, encoder, decoder):
+    def __init__(self, encoder, decoder, i, dropoutp=0.1):
         super(Translation, self).__init__()
+        if i != 0:
+            self.input = nn.Linear(encoder.outdim, encoder.indim)
+            self.dropout_layer = torch.nn.Dropout(dropoutp)
         self.encoder = encoder
         self.decoder = decoder
 
     def forward(self, src):
+        # if src.shape[1] != self.encoder.indim:
+        #     src = self.input(src)
+        #     src = self.dropout_layer(src)
         joint_embbed = self.encoder(src)
         out = self.decoder(joint_embbed)
         return out, joint_embbed

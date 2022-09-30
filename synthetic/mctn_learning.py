@@ -10,10 +10,10 @@ from torchinfo import summary
 softmax = nn.Softmax()
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-def train(traindata, validdata, encoders, decoders, head, model=None, epoch=100, level=2, criterion_t=nn.MSELoss(), criterion_c=nn.MSELoss(), criterion_r=nn.CrossEntropyLoss(), mu_t=0.01, mu_c=0.01, dropout_p=0.1, early_stop=False, patience_num=15, lr=1e-4, weight_decay=0.01, op_type=torch.optim.AdamW, save='best_mctn.pt'):
+def train(traindata, validdata, encoders, decoders, head, model=None, epoch=100, level=2, criterion_t=nn.MSELoss(), criterion_c=nn.MSELoss(), criterion_r=nn.CrossEntropyLoss(), mu_t=0.01, mu_c=0, dropout_p=0.1, early_stop=False, patience_num=15, lr=1e-4, weight_decay=0.01, op_type=torch.optim.AdamW, save='best_mctn.pt'):
     if not model:
-        translations = zip(encoders, decoders)
-        translations = [Translation(encoder, decoder).to(device) for encoder, decoder in translations]
+        translations = list(enumerate(zip(encoders, decoders)))
+        translations = [Translation(encoder, decoder, i).to(device) for i, (encoder, decoder) in translations]
         model = MCTN(translations, head, p=dropout_p).to(device)
     op = op_type(model.parameters(), lr=lr, weight_decay=weight_decay)
     scheduler = scheduler = optim.lr_scheduler.ReduceLROnPlateau(op, factor=0.5, patience=7, verbose=True)
@@ -66,7 +66,6 @@ def train(traindata, validdata, encoders, decoders, head, model=None, epoch=100,
             sum_total_loss += total_loss
             sum_loss += loss
             total_batch += 1
-
             total_loss.backward()
             op.step()
 
