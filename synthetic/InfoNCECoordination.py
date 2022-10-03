@@ -22,7 +22,7 @@ from torchinfo import summary
 import argparse
 import pickle
 
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda")
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--data-path", default="/home/yuncheng/MultiBench/synthetic/SIMPLE_DATA_DIM=3_STD=0.5.pickle", type=str, help="input path of synthetic dataset")
@@ -35,8 +35,9 @@ parser.add_argument("--output-dim", default=128, type=int)
 parser.add_argument("--hidden-dim", default=512, type=int)
 parser.add_argument("--rank", default=32, type=int)
 parser.add_argument("--num-classes", default=2, type=int)
-parser.add_argument("--epochs", default=100, type=int)
+parser.add_argument("--epochs", default=1, type=int)
 parser.add_argument("--weight-decay", default=0.01, type=float)
+parser.add_argument("--lr", default=0.01, type=float)
 parser.add_argument("--saved-model", default='/home/yuncheng/lrf_best.pt', type=str)
 args = parser.parse_args()
 
@@ -54,27 +55,37 @@ val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=args.bs, co
 
 from info_nce import InfoNCE
 
-assert args.modalities == 2
-
-encoder = Linear(args.input_dim, args.output_dim).to(device)
-head = MLP(args.out_dim, args.hidden_dim, args.num_classes).to(device)
+encoders = nn.ModuleList([MLP(args.input_dim, args.output_dim, args.output_dim).to(device)]*(len(args.keys)-1))
+head = MLP(args.output_dim, args.hidden_dim, args.num_classes).to(device)
 fusion = Concat().cuda()
 criterion = InfoNCE()
-optimizer = torch.optim.Adam(encoder.parameters())
-
-for idx in range(args.epochs):
+optimizer = torch.optim.Adam(encoders.parameters())
+from tqdm import tqdm
+for idx in tqdm(range(args.epochs)):
   losses = 0
-  for a,b in train_dataloader:
-    a_enc, b_enc = encoder(a), (b)
-    loss = criterion(a_enc,b_enc)   
+  for datum in train_dataloader:
+    datum = datum['views']
+    datum = [data.to(device) for data in datum]
+    encoded = [encoders[idx](elem) for idx, elem in enumerate(datum)]
+    loss = 0.0
+    count = 0.0
+    for idx, a in enumerate(encoded):
+      for id2, b in enumerate(encoded):
+        if idx <= id2: 
+          continue
+        loss += criterion(a,b)
+        count += 1.0
+    loss = loss / count
     optimizer.zero_grad()
     loss.backward()
     losses += loss.item()
     optimizer.step()
   print(losses/len(train_dataloader))
 
-for param in encoder.parameters():
+for encoder in encoders:
+  for param in encoder.parameters():
     param.requires_grad = False
+
 
 encoders = [encoder for _ in range(2)]
 # Load data
