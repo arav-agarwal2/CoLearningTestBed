@@ -6,7 +6,6 @@ import numpy as np
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--bs", default=32, type=int)
 parser.add_argument("--data-points-per-concept", default=1000, type=int)
 parser.add_argument("--modality-number", default=2, type=int)
 parser.add_argument("--dominant-modality-concept-variance", default=0.5, type=float)
