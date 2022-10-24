@@ -66,11 +66,11 @@ NUM_INDIV_CONCEPTS = args.individual_concepts_per_modality
 
 # Generate Concept Means
 if args.use_hypercube_concepts:
-  internal_concept_dim = 32
-  concept_means = generate_ohe(NUM_CONCEPTS)
-else:
   internal_concept_dim = math.ceil(math.log(NUM_CONCEPTS, 2))
   concept_means = generate_binary(internal_concept_dim)
+else:
+  internal_concept_dim = NUM_CONCEPTS
+  concept_means = generate_ohe(internal_concept_dim)
 
 
 # Generate means of concepts, so that they're spaced out evenly a la sklearn.datasets.make_classification [
