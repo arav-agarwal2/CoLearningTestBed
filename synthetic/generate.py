@@ -79,7 +79,7 @@ keys = ['a','b','c','d','e']
 TF_SEQ =  {keys[idx]:np.random.normal(0.0,1.0,(CONCEPT_DIM, DIMENSION)) for idx in range(NUM_MODALITIES)}
 
 # Transform from concepts to concept_means
-TFSTAR = np.random.uniform(0.0,1.0,(internal_concept_dim, CONCEPT_DIM))
+TFSTAR = np.random.uniform(-2.0,2.0,(internal_concept_dim, CONCEPT_DIM))
 
 
 
