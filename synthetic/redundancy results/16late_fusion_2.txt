@@ -1,0 +1,246 @@
+Train data: 16000
+Test data: 16000
+Epoch 0 train loss: tensor(2.7513, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 0 valid loss: tensor(2.4967, device='cuda:0') acc: 0.22675
+Saving Best
+Epoch 1 train loss: tensor(2.2960, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 1 valid loss: tensor(2.1135, device='cuda:0') acc: 0.3825625
+Saving Best
+Epoch 2 train loss: tensor(1.9191, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 2 valid loss: tensor(1.7687, device='cuda:0') acc: 0.4881875
+Saving Best
+Epoch 3 train loss: tensor(1.6242, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 3 valid loss: tensor(1.5335, device='cuda:0') acc: 0.547125
+Saving Best
+Epoch 4 train loss: tensor(1.4391, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 4 valid loss: tensor(1.3893, device='cuda:0') acc: 0.586
+Saving Best
+Epoch 5 train loss: tensor(1.3238, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 5 valid loss: tensor(1.2951, device='cuda:0') acc: 0.6109375
+Saving Best
+Epoch 6 train loss: tensor(1.2440, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 6 valid loss: tensor(1.2294, device='cuda:0') acc: 0.627625
+Saving Best
+Epoch 7 train loss: tensor(1.1845, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 7 valid loss: tensor(1.1797, device='cuda:0') acc: 0.6390625
+Saving Best
+Epoch 8 train loss: tensor(1.1382, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 8 valid loss: tensor(1.1443, device='cuda:0') acc: 0.6484375
+Saving Best
+Epoch 9 train loss: tensor(1.1025, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 9 valid loss: tensor(1.1108, device='cuda:0') acc: 0.65875
+Saving Best
+Epoch 10 train loss: tensor(1.0702, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 10 valid loss: tensor(1.0849, device='cuda:0') acc: 0.6626875
+Saving Best
+Epoch 11 train loss: tensor(1.0438, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 11 valid loss: tensor(1.0629, device='cuda:0') acc: 0.6698125
+Saving Best
+Epoch 12 train loss: tensor(1.0213, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 12 valid loss: tensor(1.0473, device='cuda:0') acc: 0.6726875
+Saving Best
+Epoch 13 train loss: tensor(1.0015, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 13 valid loss: tensor(1.0291, device='cuda:0') acc: 0.678875
+Saving Best
+Epoch 14 train loss: tensor(0.9843, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 14 valid loss: tensor(1.0109, device='cuda:0') acc: 0.684625
+Saving Best
+Epoch 15 train loss: tensor(0.9682, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 15 valid loss: tensor(1.0010, device='cuda:0') acc: 0.684625
+Epoch 16 train loss: tensor(0.9556, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 16 valid loss: tensor(0.9884, device='cuda:0') acc: 0.691125
+Saving Best
+Epoch 17 train loss: tensor(0.9445, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 17 valid loss: tensor(0.9789, device='cuda:0') acc: 0.69175
+Saving Best
+Epoch 18 train loss: tensor(0.9341, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 18 valid loss: tensor(0.9702, device='cuda:0') acc: 0.6950625
+Saving Best
+Epoch 19 train loss: tensor(0.9247, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 19 valid loss: tensor(0.9615, device='cuda:0') acc: 0.6979375
+Saving Best
+Epoch 20 train loss: tensor(0.9157, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 20 valid loss: tensor(0.9556, device='cuda:0') acc: 0.6981875
+Saving Best
+Epoch 21 train loss: tensor(0.9088, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 21 valid loss: tensor(0.9475, device='cuda:0') acc: 0.70125
+Saving Best
+Epoch 22 train loss: tensor(0.9011, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 22 valid loss: tensor(0.9435, device='cuda:0') acc: 0.7019375
+Saving Best
+Epoch 23 train loss: tensor(0.8945, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 23 valid loss: tensor(0.9386, device='cuda:0') acc: 0.7039375
+Saving Best
+Epoch 24 train loss: tensor(0.8884, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 24 valid loss: tensor(0.9289, device='cuda:0') acc: 0.7078125
+Saving Best
+Epoch 25 train loss: tensor(0.8831, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 25 valid loss: tensor(0.9317, device='cuda:0') acc: 0.7031875
+Epoch 26 train loss: tensor(0.8787, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 26 valid loss: tensor(0.9259, device='cuda:0') acc: 0.70725
+Epoch 27 train loss: tensor(0.8742, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 27 valid loss: tensor(0.9170, device='cuda:0') acc: 0.706875
+Epoch 28 train loss: tensor(0.8691, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 28 valid loss: tensor(0.9195, device='cuda:0') acc: 0.7086875
+Saving Best
+Epoch 29 train loss: tensor(0.8660, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 29 valid loss: tensor(0.9134, device='cuda:0') acc: 0.7113125
+Saving Best
+Epoch 30 train loss: tensor(0.8607, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 30 valid loss: tensor(0.9081, device='cuda:0') acc: 0.7101875
+Epoch 31 train loss: tensor(0.8601, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 31 valid loss: tensor(0.9089, device='cuda:0') acc: 0.71325
+Saving Best
+Epoch 32 train loss: tensor(0.8554, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 32 valid loss: tensor(0.9069, device='cuda:0') acc: 0.711
+Epoch 33 train loss: tensor(0.8525, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 33 valid loss: tensor(0.9086, device='cuda:0') acc: 0.71
+Epoch 34 train loss: tensor(0.8499, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 34 valid loss: tensor(0.9014, device='cuda:0') acc: 0.7113125
+Epoch 35 train loss: tensor(0.8466, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 35 valid loss: tensor(0.9015, device='cuda:0') acc: 0.7135
+Saving Best
+Epoch 36 train loss: tensor(0.8443, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 36 valid loss: tensor(0.8943, device='cuda:0') acc: 0.715125
+Saving Best
+Epoch 37 train loss: tensor(0.8429, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 37 valid loss: tensor(0.8949, device='cuda:0') acc: 0.715375
+Saving Best
+Epoch 38 train loss: tensor(0.8413, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 38 valid loss: tensor(0.8910, device='cuda:0') acc: 0.7163125
+Saving Best
+Epoch 39 train loss: tensor(0.8382, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 39 valid loss: tensor(0.8915, device='cuda:0') acc: 0.7170625
+Saving Best
+Epoch 40 train loss: tensor(0.8374, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 40 valid loss: tensor(0.8879, device='cuda:0') acc: 0.718375
+Saving Best
+Epoch 41 train loss: tensor(0.8362, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 41 valid loss: tensor(0.8888, device='cuda:0') acc: 0.7169375
+Epoch 42 train loss: tensor(0.8314, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 42 valid loss: tensor(0.8854, device='cuda:0') acc: 0.7174375
+Epoch 43 train loss: tensor(0.8304, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 43 valid loss: tensor(0.8873, device='cuda:0') acc: 0.717875
+Epoch 44 train loss: tensor(0.8297, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 44 valid loss: tensor(0.8864, device='cuda:0') acc: 0.7189375
+Saving Best
+Epoch 45 train loss: tensor(0.8303, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 45 valid loss: tensor(0.8860, device='cuda:0') acc: 0.717
+Epoch 46 train loss: tensor(0.8270, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 46 valid loss: tensor(0.8851, device='cuda:0') acc: 0.7175625
+Epoch 47 train loss: tensor(0.8244, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 47 valid loss: tensor(0.8813, device='cuda:0') acc: 0.7184375
+Epoch 48 train loss: tensor(0.8248, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 48 valid loss: tensor(0.8808, device='cuda:0') acc: 0.719125
+Saving Best
+Epoch 49 train loss: tensor(0.8228, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 49 valid loss: tensor(0.8820, device='cuda:0') acc: 0.7203125
+Saving Best
+Epoch 50 train loss: tensor(0.8209, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 50 valid loss: tensor(0.8813, device='cuda:0') acc: 0.7189375
+Epoch 51 train loss: tensor(0.8210, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 51 valid loss: tensor(0.8841, device='cuda:0') acc: 0.719
+Epoch 52 train loss: tensor(0.8215, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 52 valid loss: tensor(0.8773, device='cuda:0') acc: 0.722125
+Saving Best
+Epoch 53 train loss: tensor(0.8184, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 53 valid loss: tensor(0.8824, device='cuda:0') acc: 0.7185
+Epoch 54 train loss: tensor(0.8169, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 54 valid loss: tensor(0.8772, device='cuda:0') acc: 0.7203125
+Epoch 55 train loss: tensor(0.8168, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 55 valid loss: tensor(0.8849, device='cuda:0') acc: 0.7175625
+Epoch 56 train loss: tensor(0.8168, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 56 valid loss: tensor(0.8768, device='cuda:0') acc: 0.719125
+Epoch 57 train loss: tensor(0.8164, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 57 valid loss: tensor(0.8752, device='cuda:0') acc: 0.72025
+Epoch 58 train loss: tensor(0.8147, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 58 valid loss: tensor(0.8752, device='cuda:0') acc: 0.721625
+Epoch 59 train loss: tensor(0.8135, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 59 valid loss: tensor(0.8785, device='cuda:0') acc: 0.720875
+Epoch 60 train loss: tensor(0.8136, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 60 valid loss: tensor(0.8751, device='cuda:0') acc: 0.721
+Epoch 61 train loss: tensor(0.8118, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 61 valid loss: tensor(0.8768, device='cuda:0') acc: 0.7204375
+Epoch 62 train loss: tensor(0.8113, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 62 valid loss: tensor(0.8720, device='cuda:0') acc: 0.7216875
+Epoch 63 train loss: tensor(0.8098, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 63 valid loss: tensor(0.8716, device='cuda:0') acc: 0.722625
+Saving Best
+Epoch 64 train loss: tensor(0.8086, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 64 valid loss: tensor(0.8740, device='cuda:0') acc: 0.7208125
+Epoch 65 train loss: tensor(0.8098, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 65 valid loss: tensor(0.8713, device='cuda:0') acc: 0.7243125
+Saving Best
+Epoch 66 train loss: tensor(0.8089, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 66 valid loss: tensor(0.8747, device='cuda:0') acc: 0.72375
+Epoch 67 train loss: tensor(0.8085, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 67 valid loss: tensor(0.8714, device='cuda:0') acc: 0.7219375
+Epoch 68 train loss: tensor(0.8083, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 68 valid loss: tensor(0.8716, device='cuda:0') acc: 0.723
+Epoch 69 train loss: tensor(0.8059, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 69 valid loss: tensor(0.8733, device='cuda:0') acc: 0.720625
+Epoch 70 train loss: tensor(0.8054, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 70 valid loss: tensor(0.8738, device='cuda:0') acc: 0.722375
+Epoch 71 train loss: tensor(0.8050, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 71 valid loss: tensor(0.8729, device='cuda:0') acc: 0.7220625
+Epoch 72 train loss: tensor(0.8055, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 72 valid loss: tensor(0.8771, device='cuda:0') acc: 0.7223125
+Epoch 73 train loss: tensor(0.8047, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 73 valid loss: tensor(0.8749, device='cuda:0') acc: 0.7211875
+Epoch 74 train loss: tensor(0.8049, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 74 valid loss: tensor(0.8755, device='cuda:0') acc: 0.7218125
+Epoch 75 train loss: tensor(0.8048, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 75 valid loss: tensor(0.8710, device='cuda:0') acc: 0.7234375
+Epoch 76 train loss: tensor(0.8031, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 76 valid loss: tensor(0.8713, device='cuda:0') acc: 0.720375
+Epoch 77 train loss: tensor(0.8018, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 77 valid loss: tensor(0.8709, device='cuda:0') acc: 0.72125
+Epoch 78 train loss: tensor(0.8031, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 78 valid loss: tensor(0.8706, device='cuda:0') acc: 0.7230625
+Epoch 79 train loss: tensor(0.8007, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 79 valid loss: tensor(0.8744, device='cuda:0') acc: 0.722
+Epoch 80 train loss: tensor(0.8024, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 80 valid loss: tensor(0.8729, device='cuda:0') acc: 0.7223125
+Epoch 81 train loss: tensor(0.8016, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 81 valid loss: tensor(0.8742, device='cuda:0') acc: 0.721
+Epoch 82 train loss: tensor(0.8009, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 82 valid loss: tensor(0.8728, device='cuda:0') acc: 0.7226875
+Epoch 83 train loss: tensor(0.8006, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 83 valid loss: tensor(0.8720, device='cuda:0') acc: 0.7229375
+Epoch 84 train loss: tensor(0.7994, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 84 valid loss: tensor(0.8716, device='cuda:0') acc: 0.7214375
+Epoch 85 train loss: tensor(0.7994, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 85 valid loss: tensor(0.8719, device='cuda:0') acc: 0.722625
+Epoch 86 train loss: tensor(0.7983, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 86 valid loss: tensor(0.8701, device='cuda:0') acc: 0.720875
+Epoch 87 train loss: tensor(0.7993, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 87 valid loss: tensor(0.8723, device='cuda:0') acc: 0.723375
+Epoch 88 train loss: tensor(0.7991, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 88 valid loss: tensor(0.8727, device='cuda:0') acc: 0.7208125
+Epoch 89 train loss: tensor(0.7979, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 89 valid loss: tensor(0.8761, device='cuda:0') acc: 0.722375
+Epoch 90 train loss: tensor(0.7980, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 90 valid loss: tensor(0.8692, device='cuda:0') acc: 0.7223125
+Epoch 91 train loss: tensor(0.7970, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 91 valid loss: tensor(0.8686, device='cuda:0') acc: 0.7215625
+Epoch 92 train loss: tensor(0.7983, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 92 valid loss: tensor(0.8765, device='cuda:0') acc: 0.7218125
+Epoch 93 train loss: tensor(0.7968, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 93 valid loss: tensor(0.8721, device='cuda:0') acc: 0.7219375
+Epoch 94 train loss: tensor(0.7964, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 94 valid loss: tensor(0.8719, device='cuda:0') acc: 0.7221875
+Epoch 95 train loss: tensor(0.7964, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 95 valid loss: tensor(0.8761, device='cuda:0') acc: 0.719875
+Epoch 96 train loss: tensor(0.7967, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 96 valid loss: tensor(0.8720, device='cuda:0') acc: 0.720875
+Epoch 97 train loss: tensor(0.7964, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 97 valid loss: tensor(0.8750, device='cuda:0') acc: 0.7220625
+Epoch 98 train loss: tensor(0.7949, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 98 valid loss: tensor(0.8732, device='cuda:0') acc: 0.7215625
+Epoch 99 train loss: tensor(0.7941, device='cuda:0', grad_fn=<DivBackward0>)
+Epoch 99 valid loss: tensor(0.8727, device='cuda:0') acc: 0.7219375
+Testing: 
+acc: 0.7243125
+Training Time: 164.29149389266968
+Training Peak Mem: 2636.86328125
+Training Params: 32144

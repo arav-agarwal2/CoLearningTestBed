@@ -26,7 +26,7 @@ device = torch.device("cuda")
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--data-path", default="/home/yuncheng/MultiBench/synthetic/SIMPLE_DATA_DIM=3_STD=0.5.pickle", type=str, help="input path of synthetic dataset")
-parser.add_argument("--keys", nargs='+', default=['a','b','c','d','e','label'], type=list, help="keys to access data of each modality and label, assuming dataset is structured as a dict")
+parser.add_argument("--keys", nargs='+', default=['a','b','c','d','e','label'], type=str, help="keys to access data of each modality and label, assuming dataset is structured as a dict")
 parser.add_argument("--modalities", nargs='+', default=[0,1], type=int, help="specify the index of modalities in keys")
 parser.add_argument("--bs", default=32, type=int)
 parser.add_argument("--num-workers", default=4, type=int)
@@ -35,7 +35,7 @@ parser.add_argument("--output-dim", default=128, type=int)
 parser.add_argument("--hidden-dim", default=512, type=int)
 parser.add_argument("--rank", default=32, type=int)
 parser.add_argument("--num-classes", default=2, type=int)
-parser.add_argument("--epochs", default=1, type=int)
+parser.add_argument("--epochs", default=100, type=int)
 parser.add_argument("--weight-decay", default=0.01, type=float)
 parser.add_argument("--lr", default=0.01, type=float)
 parser.add_argument("--saved-model", default='/home/yuncheng/lrf_best.pt', type=str)
@@ -55,8 +55,8 @@ val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=args.bs, co
 
 from info_nce import InfoNCE
 
-encoders = nn.ModuleList([MLP(args.input_dim, args.output_dim, args.output_dim).to(device)]*(len(args.keys)-1))
-head = MLP(args.output_dim, args.hidden_dim, args.num_classes).to(device)
+encoders = nn.ModuleList([MLP(args.input_dim, args.output_dim, args.output_dim).to(device)]*len(args.modalities))
+head = MLP(args.output_dim*len(args.modalities), args.hidden_dim, args.num_classes).to(device)
 fusion = Concat().cuda()
 criterion = InfoNCE()
 optimizer = torch.optim.Adam(encoders.parameters())
@@ -87,7 +87,7 @@ for encoder in encoders:
     param.requires_grad = False
 
 
-encoders = [encoder for _ in range(2)]
+encoders = [encoder for _ in range(len(args.modalities))]
 # Load data
 traindata, validdata, testdata = get_dataloader(path=args.data_path, keys=args.keys, modalities=args.modalities, batch_size=args.bs, num_workers=args.num_workers)
 

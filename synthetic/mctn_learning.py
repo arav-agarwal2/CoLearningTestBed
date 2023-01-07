@@ -3,7 +3,7 @@ from torch import nn
 import torch.optim as optim
 import numpy as np
 from mctn_model import Translation, MCTN
-from eval_scripts.performance import accuracy
+from sklearn.metrics import accuracy_score
 from torchinfo import summary
 
 
@@ -30,6 +30,8 @@ def train(traindata, validdata, encoders, decoders, head, model=None, epoch=100,
         sum_total_loss = 0
         sum_loss = 0
         total_batch = 0
+        pred = []
+        true = []
         for inputs in traindata:
             src, trgs, labels = _process_input(inputs)
             translation_losses = []
@@ -59,6 +61,8 @@ def train(traindata, validdata, encoders, decoders, head, model=None, epoch=100,
                         cyclic_loss += criterion_c[i](o, trgs[i-1][j])
                 cyclic_loss /= reout.size(0)
                 cyclic_losses.append(cyclic_loss)
+            pred.append(torch.argmax(head_out, 1))
+            true.append(labels)
             loss = criterion_r(head_out, labels)
 
             total_loss = mu_t * sum(translation_losses) + mu_c * sum(cyclic_losses) + loss
@@ -72,7 +76,12 @@ def train(traindata, validdata, encoders, decoders, head, model=None, epoch=100,
         sum_total_loss /= total_batch
         sum_loss /= total_batch
 
-        print('Train Epoch {}, total loss: {}, regression loss: {}, embedding loss: {}'.format(ep, sum_total_loss, sum_loss, sum_total_loss - sum_loss))
+        if pred:
+            pred = torch.cat(pred, 0)
+        true = torch.cat(true, 0)
+        acc = accuracy_score(true.detach().cpu().numpy(), pred.detach().cpu().numpy())
+
+        print('Train Epoch {}, total loss: {}, regression loss: {}, embedding loss: {}, acc: {}'.format(ep, sum_total_loss, sum_loss, sum_total_loss - sum_loss, acc))
 
         model.eval()
         print('Start Evaluating ---------->>')
@@ -90,7 +99,7 @@ def train(traindata, validdata, encoders, decoders, head, model=None, epoch=100,
             if pred:
                 pred = torch.cat(pred, 0)
             true = torch.cat(true, 0)
-            acc = accuracy(true, pred)
+            acc = accuracy_score(true.detach().cpu().numpy(), pred.detach().cpu().numpy())
             print('Eval Epoch: {}, val loss: {}, acc: {}'.format(ep, np.mean(val_loss), acc))
 
             # scheduler.step(np.mean(val_loss))
@@ -123,7 +132,7 @@ def test(model, testdata):
         if pred:
             pred = torch.cat(pred, 0)
         true = torch.cat(true, 0)
-        acc = accuracy(true, pred)
+        acc = accuracy_score(true.detach().cpu().numpy(), pred.detach().cpu().numpy())
         print('Test Acc: {}'.format(acc))
 
 

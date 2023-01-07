@@ -59,28 +59,28 @@ class MCTN(nn.Module):
         out, joint_embbed = self.translations[0](src)
         outs = [out]
         reouts = []
-        if self.training:
-            reout, joint_embbed = self.translations[0](out)
-            reouts = [reout]
-            for i in range(1, len(trgs)-1):
-                out, joint_embbed = self.translations[i](joint_embbed)
-                reout, joint_embbed = self.translations[i](out)
-                outs.append(out)
-                reouts.append(reout)
-            out, joint_embbed = self.translations[-1](joint_embbed)
+        joint_embbeds = []
+        # if self.training:
+        reout, joint_embbed = self.translations[0](out)
+        reouts = [reout]
+        joint_embbeds = [joint_embbed]
+        for i in range(1, len(trgs)-1):
+            out, joint_embbed = self.translations[i](joint_embbed)
+            reout, joint_embbed = self.translations[i](out)
             outs.append(out)
-        else:
-            for i in range(1, len(trgs)):
-                if out.shape[1] != self.translations[i-1].encoder.indim:
-                    out = self.translations[i-1].input(out)
-                    out = self.translations[i-1].dropout_layer(out)
-                joint_embbed = self.translations[i-1].encoder(out)
-                out, joint_embbed = self.translations[i](joint_embbed)
-                outs.append(out)
-            if out.shape[1] != self.translations[i-1].encoder.indim:
-                out = self.translations[-1].input(out)
-                out = self.translations[-1].dropout_layer(out)
-            joint_embbed = self.translations[-1].encoder(out)
+            reouts.append(reout)
+            joint_embbeds.append(joint_embbed)
+        out, joint_embbed = self.translations[-1](joint_embbed)
+        outs.append(out)
+        joint_embbeds.append(joint_embbed)
+        # else:
+        #     for i in range(1, len(trgs)):
+        #         joint_embbed = self.translations[i-1].encoder(out)
+        #         out, joint_embbed = self.translations[i](joint_embbed)
+        #         outs.append(out)
+        #         joint_embbeds.append(joint_embbed)
+        #     joint_embbed = self.translations[-1].encoder(out)
+        #     joint_embbeds.append(joint_embbed)
         head_out = self.head(joint_embbed)
         head_out = self.dropout(head_out)
         return outs, reouts, head_out
